@@ -33,13 +33,18 @@ Following are the core functionalities involved
 1. I have created WeatherInputErrorPopup component which is a basic MUI card layout to display error if input is empty.
 2. I have created WeatherErrorPopup component which is a basic MUI Card Layout to display error if entered city does not exist. 
 
-
 # Architecting 
 A simple architecture is followed to keep the app modular. For now, I have seperated only the error component from the main dashboard component. 
+
+# Bonus Features implementation 
+1. Auto suggestions - I have used Lodash debounce + geolocation API which was available.
+2. I will be combining this with the readily available MUI Autofield component in order to implement suggestion
+3. I have added Animations for card loading.
 
 # Improvements to Application architecture
 1. Seperation of concerns between the core logic and the reusable components can be achieved by making the core logic functions independent and away from the weatherDashboard component.
 2. I could seperate the cards as a component and make it reusable, Due to the smaller nature of this application i have not done it nor did time allow me for now.
+3. Exposing private keys is not a good practice in production. Although, since this is a test environment, i have made direct use of the api_key from my openWeather account.
 
 
 

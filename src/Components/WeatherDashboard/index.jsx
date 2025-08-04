@@ -8,6 +8,8 @@ import {
   CircularProgress,
   InputAdornment,
 } from "@mui/material";
+import { Autocomplete } from "@mui/material";
+import debounce from "lodash.debounce";
 import SearchIcon from "@mui/icons-material/Search";
 import WbSunnyRoundedIcon from "@mui/icons-material/WbSunnyRounded";
 import FmdGoodRoundedIcon from "@mui/icons-material/FmdGoodRounded";
@@ -21,6 +23,7 @@ import ReactAnimatedWeather from "react-animated-weather";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import InputErrorPopup from "../WeatherInputErrorPopup";
 import Chip from "@mui/material/Chip";
+import CityAutoComplete from "../CityAutoComplete";
 
 const API_KEY = "6aa2b5cd48b2524ab26a4fb65f40c95b";
 
@@ -200,79 +203,44 @@ function WeatherDashboard() {
             fetchWeather();
           }}
         >
-          <TextField
-            placeholder="Search for a city"
-            variant="outlined"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon color="action" />
-                </InputAdornment>
-              ),
-              endAdornment: city ? (
-                <InputAdornment position="end">
-                  <CloseRoundedIcon
-                    onClick={() => setCity("")}
-                    sx={{
-                      cursor: "pointer",
-                      color: "#0ea5e9",
-                      fontSize: 28,
-                      "&:hover": { color: "#232e4a" },
-                    }}
-                  />
-                </InputAdornment>
-              ) : null,
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
             }}
-            sx={{
-              width: 300,
-              borderRadius: 8,
-              backgroundColor: "white",
-              boxShadow: "0 0 6px #dbeafe",
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 8,
-              },
-              "& .MuiOutlinedInput-root.Mui-focused": {
-                borderColor: "#2563eb",
-                boxShadow: "0 0 8px #2563eb",
-              },
-              input: {
-                fontSize: 18,
-                padding: "14px 14px",
-              },
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            type="submit"
-            sx={{
-              marginLeft: "10px",
-              borderRadius: "999px",
-              fontWeight: "bold",
-              paddingX: 4,
-              whiteSpace: "nowrap",
-              height: "56px",
-              backgroundColor: "#232e4a",
-              color: "#fff",
-              boxShadow: "0 2px 10px rgba(35,46,74,0.14)",
-              "&:hover": {
-                backgroundColor: "#37507b",
-              },
-              textTransform: "none",
-              fontSize: "18px",
-              letterSpacing: "0.02em",
-            }}
-            disabled={loading}
           >
-            {loading ? (
-              <CircularProgress size={22} color="inherit" />
-            ) : (
-              "Search"
-            )}
-          </Button>
+            <CityAutoComplete city={city} setCity={setCity} />
+            <Button
+              variant="contained"
+              size="large"
+              type="submit"
+              sx={{
+                marginLeft: "10px",
+                borderRadius: "999px",
+                fontWeight: "bold",
+                paddingX: 4,
+                whiteSpace: "nowrap",
+                height: "56px",
+                backgroundColor: "#232e4a",
+                color: "#fff",
+                boxShadow: "0 2px 10px rgba(35,46,74,0.14)",
+                "&:hover": {
+                  backgroundColor: "#37507b",
+                },
+                textTransform: "none",
+                fontSize: "18px",
+                letterSpacing: "0.02em",
+              }}
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={22} color="inherit" />
+              ) : (
+                "Search"
+              )}
+            </Button>
+          </div>
         </form>
         <div
           style={{
