@@ -26,7 +26,7 @@ Tech Stack:
 # Core functionality/Logic
 Following are the core functionalities involved
 1. A function to Fetch Weather API details - fetchWeather()
-2. A function to Show icons based on weathers fetched - getWeatherIcon()
+2. A function to Show icons based on weathers fetched - getAnimatedWeatherIcon() - Used a library react animated weather icons.
 3. A function to Show recommended outfits based on weather data - getOutfitRecommendation() 
 
 # Architecting 
@@ -36,4 +36,6 @@ A simple architecture is followed to keep the app modular. For now, I have seper
 # Improvements to Application architecture
 1. Seperation of concerns between the core logic and the reusable components can be achieved by making the core logic functions independent and away from the weatherDashboard component.
 2. I could seperate the cards as a component and make it reusable, Due to the smaller nature of this application i have not done it nor did time allow me for now.
+
+
 
