@@ -14,3 +14,26 @@ Tech Stack:
 # How to run the project on localhost?
 1. After forking from the repository, Please do an npm install - This should install all the dependencies that are required to run the project. 
 2. npm start command in order to load up the application on your localhost:3000.
+
+# OpenWeatherMap API 
+1. I created an account and used an API key that i got from my profile on OpenweatherMap.
+2. I had to wait for sometime in order to get my APU key Activated.
+
+# Design details
+1. I have used a simple search bar to search for cities, followed by a search button next to it.
+2. I have used MUI cards to display the weather details and the recommendation data. 
+
+# Core functionality/Logic
+Following are the core functionalities involved
+1. A function to Fetch Weather API details - fetchWeather()
+2. A function to Show icons based on weathers fetched - getWeatherIcon()
+3. A function to Show recommended outfits based on weather data - getOutfitRecommendation() 
+
+# Architecting 
+A simple architecture is followed to keep the app modular. For now, I have seperated only the error component from the main dashboard component. 
+
+
+# Improvements to Application architecture
+1. Seperation of concerns between the core logic and the reusable components can be achieved by making the core logic functions independent and away from the weatherDashboard component.
+2. I could seperate the cards as a component and make it reusable, Due to the smaller nature of this application i have not done it nor did time allow me for now.
+
