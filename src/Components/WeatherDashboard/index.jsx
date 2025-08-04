@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
-  TextField,
   Button,
   Card,
   CardContent,
   Typography,
   CircularProgress,
-  InputAdornment,
 } from "@mui/material";
-import { Autocomplete } from "@mui/material";
-import debounce from "lodash.debounce";
-import SearchIcon from "@mui/icons-material/Search";
 import WbSunnyRoundedIcon from "@mui/icons-material/WbSunnyRounded";
 import FmdGoodRoundedIcon from "@mui/icons-material/FmdGoodRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
@@ -20,10 +15,10 @@ import UmbrellaRoundedIcon from "@mui/icons-material/UmbrellaRounded";
 import CheckroomRoundedIcon from "@mui/icons-material/Checkroom";
 import WeatherErrorPopup from "../WeatherErrorPopup";
 import ReactAnimatedWeather from "react-animated-weather";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import InputErrorPopup from "../WeatherInputErrorPopup";
 import Chip from "@mui/material/Chip";
 import CityAutoComplete from "../CityAutoComplete";
+import { motion } from "framer-motion";
 
 const API_KEY = "6aa2b5cd48b2524ab26a4fb65f40c95b";
 
@@ -132,6 +127,8 @@ function WeatherDashboard() {
   const [showError, setShowError] = useState(false);
   const [inputError, setInputError] = useState(false);
   const [recentCities, setRecentCities] = useState([]);
+  const [loadingRecommendation, setLoadingRecommendation] = useState(true);
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     const storedCities = sessionStorage.getItem("recentCities");
@@ -139,6 +136,16 @@ function WeatherDashboard() {
       setRecentCities(JSON.parse(storedCities));
     }
   }, []);
+
+  useEffect(() => {
+    if (weather) {
+      setLoadingRecommendation(true);
+      const timer = setTimeout(() => {
+        setLoadingRecommendation(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [weather]);
 
   const addCityToRecent = (city) => {
     setRecentCities((prev) => {
@@ -210,7 +217,12 @@ function WeatherDashboard() {
               alignItems: "center",
             }}
           >
-            <CityAutoComplete city={city} setCity={setCity} />
+            <CityAutoComplete
+              city={city}
+              setCity={setCity}
+              inputValue={inputValue}
+              setInputValue={setInputValue}
+            />
             <Button
               variant="contained"
               size="large"
@@ -255,7 +267,10 @@ function WeatherDashboard() {
             <Chip
               key={city}
               label={city}
-              onClick={() => setCity(city)}
+              onClick={() => {
+                setCity(city);
+                setInputValue(city);
+              }}
               onDelete={() => {
                 setRecentCities((prev) => {
                   const filtered = prev.filter((c) => c !== city);
@@ -289,106 +304,116 @@ function WeatherDashboard() {
             marginLeft: "50px",
           }}
         >
-          <Card
-            className="mx-auto"
-            sx={{
-              maxWidth: 370,
-              minWidth: 320,
-              height: 485,
-              borderRadius: 5,
-              padding: 2,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              background: "linear-gradient(145deg, #232e4a 55%, #37507b 100%)",
-              boxShadow: "0 8px 38px -8px #0ea5e9",
-              color: "#fff",
-              marginLeft: "25px",
-            }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
-            <CardContent className="flex flex-col items-center w-full">
-              <div>
-                <ReactAnimatedWeather
-                  icon={getAnimatedWeatherIcon(weather.weather[0].main)}
-                  color="#fff"
-                  size={100}
-                  animate={true}
-                />
-              </div>
-              <Typography
-                sx={{
-                  fontSize: 56,
-                  fontWeight: "bold",
-                  color: "#fff",
-                  mb: 1,
-                  textAlign: "center",
-                }}
-              >
-                {Math.round(weather.main.temp)}°C
-              </Typography>
-              <Typography
-                variant="h6"
-                className="capitalize"
-                sx={{ mb: 1, color: "#fff" }}
-              >
-                {weather.weather[0].description}
-              </Typography>
-              <div className="flex flex-col justify-center items-center text-white w-full mb-2">
-                <div className="flex items-center gap-2 mb-2">
-                  <FmdGoodRoundedIcon fontSize="small" sx={{ color: "#fff" }} />
-                  <Typography variant="body1" sx={{ color: "#fff" }}>
-                    {weather.name}, {weather.sys.country}
-                  </Typography>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CalendarMonthRoundedIcon
-                    fontSize="small"
-                    sx={{ color: "#fff" }}
+            <Card
+              className="mx-auto"
+              sx={{
+                maxWidth: 370,
+                minWidth: 320,
+                height: 485,
+                borderRadius: 5,
+                padding: 2,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                background:
+                  "linear-gradient(145deg, #232e4a 55%, #37507b 100%)",
+                boxShadow: "0 8px 38px -8px #0ea5e9",
+                color: "#fff",
+                marginLeft: "25px",
+              }}
+            >
+              <CardContent className="flex flex-col items-center w-full">
+                <div>
+                  <ReactAnimatedWeather
+                    icon={getAnimatedWeatherIcon(weather.weather[0].main)}
+                    color="#fff"
+                    size={100}
+                    animate={true}
                   />
-                  <Typography
-                    variant="body1"
-                    sx={{ color: "#fff", fontWeight: 600 }}
-                  >
-                    {formatDateTime()}
-                  </Typography>
                 </div>
-              </div>
-              <div className="flex gap-10 justify-center mt-3 text-white font-semibold w-full">
-                <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1">
-                    <AirRoundedIcon
+                <Typography
+                  sx={{
+                    fontSize: 56,
+                    fontWeight: "bold",
+                    color: "#fff",
+                    mb: 1,
+                    textAlign: "center",
+                  }}
+                >
+                  {Math.round(weather.main.temp)}°C
+                </Typography>
+                <Typography
+                  variant="h6"
+                  className="capitalize"
+                  sx={{ mb: 1, color: "#fff" }}
+                >
+                  {weather.weather[0].description}
+                </Typography>
+                <div className="flex flex-col justify-center items-center text-white w-full mb-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <FmdGoodRoundedIcon
                       fontSize="small"
-                      sx={{ color: "#60a5fa" }}
+                      sx={{ color: "#fff" }}
                     />
-                    <Typography sx={{ color: "#60a5fa", fontWeight: 600 }}>
-                      Wind
+                    <Typography variant="body1" sx={{ color: "#fff" }}>
+                      {weather.name}, {weather.sys.country}
                     </Typography>
                   </div>
-                  <Typography>{weather.wind.speed} m/s</Typography>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="flex items-center gap-1">
-                    <OpacityRoundedIcon
+                  <div className="flex items-center gap-2">
+                    <CalendarMonthRoundedIcon
                       fontSize="small"
-                      sx={{ color: "#60a5fa" }}
+                      sx={{ color: "#fff" }}
                     />
-                    <Typography sx={{ color: "#60a5fa", fontWeight: 600 }}>
-                      Humidity
+                    <Typography
+                      variant="body1"
+                      sx={{ color: "#fff", fontWeight: 600 }}
+                    >
+                      {formatDateTime()}
                     </Typography>
                   </div>
-                  <Typography>{weather.main.humidity}%</Typography>
                 </div>
-              </div>
-            </CardContent>
-            <style>
-              {`
+                <div className="flex gap-10 justify-center mt-3 text-white font-semibold w-full">
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-1">
+                      <AirRoundedIcon
+                        fontSize="small"
+                        sx={{ color: "#60a5fa" }}
+                      />
+                      <Typography sx={{ color: "#60a5fa", fontWeight: 600 }}>
+                        Wind
+                      </Typography>
+                    </div>
+                    <Typography>{weather.wind.speed} m/s</Typography>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-1">
+                      <OpacityRoundedIcon
+                        fontSize="small"
+                        sx={{ color: "#60a5fa" }}
+                      />
+                      <Typography sx={{ color: "#60a5fa", fontWeight: 600 }}>
+                        Humidity
+                      </Typography>
+                    </div>
+                    <Typography>{weather.main.humidity}%</Typography>
+                  </div>
+                </div>
+              </CardContent>
+              <style>
+                {`
               @keyframes fadein {
                 from { opacity: 0; transform: translateY(-24px);}
                 to { opacity: 1; transform: translateY(0);}
               }
             `}
-            </style>
-          </Card>
+              </style>
+            </Card>
+          </motion.div>
           <Card
             sx={{
               width: 700,
@@ -420,7 +445,30 @@ function WeatherDashboard() {
             >
               Outfit Recommendation
             </Typography>
-            {weather && (
+
+            {loadingRecommendation ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100%",
+                }}
+              >
+                <CircularProgress size={54} color="primary" sx={{ mb: 3 }} />
+                <span
+                  style={{
+                    fontSize: 22,
+                    color: "#0284c7",
+                    fontWeight: 600,
+                    letterSpacing: ".03em",
+                  }}
+                >
+                  Thinking...
+                </span>
+              </div>
+            ) : weather ? (
               <div className="flex flex-col items-center justify-center">
                 <Typography
                   variant="h6"
@@ -448,7 +496,7 @@ function WeatherDashboard() {
                   {getOutfitRecommendation(weather).text}
                 </Typography>
               </div>
-            )}
+            ) : null}
           </Card>
         </div>
       ) : (

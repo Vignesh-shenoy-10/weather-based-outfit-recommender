@@ -4,6 +4,7 @@ Tech Stack:
 1. ReactJS - Frontend 
 2. Styling - TailwindCSS for utility classes + Material UI for ready-made, responsive components
 3. State Management - Basic React UseState, useEffect, ContextAPI -> Only for theme switching
+4. Animations - FramerMotion.
    
 # How did i setup my Development Environment?
 1. I used the npx create-react-app weather-dashboard - Although Create-react-app is deprecated, VS-Code did an auto install for me. 
@@ -45,6 +46,9 @@ A simple architecture is followed to keep the app modular. For now, I have seper
 1. Seperation of concerns between the core logic and the reusable components can be achieved by making the core logic functions independent and away from the weatherDashboard component.
 2. I could seperate the cards as a component and make it reusable, Due to the smaller nature of this application i have not done it nor did time allow me for now.
 3. Exposing private keys is not a good practice in production. Although, since this is a test environment, i have made direct use of the api_key from my openWeather account.
+
+# Deployment 
+I have deployed the application to Vercel. With automatic Pipeline setup.
 
 
 
