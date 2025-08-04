@@ -29,6 +29,10 @@ Following are the core functionalities involved
 2. A function to Show icons based on weathers fetched - getAnimatedWeatherIcon() - Used a library react animated weather icons.
 3. A function to Show recommended outfits based on weather data - getOutfitRecommendation() 
 
+# Error handling
+1. I have created WeatherInputErrorPopup component which is a basic MUI card layout to display error if input is empty.
+2. I have created WeatherErrorPopup component which is a basic MUI Card Layout to display error if entered city does not exist. 
+
 # Architecting 
 A simple architecture is followed to keep the app modular. For now, I have seperated only the error component from the main dashboard component. 
 
