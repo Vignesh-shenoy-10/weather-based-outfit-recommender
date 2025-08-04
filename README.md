@@ -1,70 +1,39 @@
-# Getting Started with Create React App
+# weather-based-outfit-recommender
+This Repository is a part of UI challenge
+Tech Stack:
+1. ReactJS - Frontend 
+2. Styling - TailwindCSS for utility classes + Material UI for ready-made, responsive components
+3. State Management - Basic React UseState, useEffect, ContextAPI -> Only for theme switching
+   
+# How did i setup my Development Environment?
+1. I used the npx create-react-app weather-dashboard - Although Create-react-app is deprecated, VS-Code did an auto install for me. 
+2. Installed dependencies - npm install @mui/material @emotion/react @emotion/styled tailwindcss -> Tailwind css did give me an error, after looking it up I did an npm install -D @tailwindcss/cli
+3. I had to configure the global css file that is index.css in order to incorporate tailwind css.
+   
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# How to run the project on localhost?
+1. After forking from the repository, Please do an npm install - This should install all the dependencies that are required to run the project. 
+2. npm start command in order to load up the application on your localhost:3000.
 
-## Available Scripts
+# OpenWeatherMap API 
+1. I created an account and used an API key that i got from my profile on OpenweatherMap.
+2. I had to wait for sometime in order to get my APU key Activated.
 
-In the project directory, you can run:
+# Design details
+1. I have used a simple search bar to search for cities, followed by a search button next to it.
+2. I have used MUI cards to display the weather details and the recommendation data. 
 
-### `npm start`
+# Core functionality/Logic
+Following are the core functionalities involved
+1. A function to Fetch Weather API details - fetchWeather()
+2. A function to Show icons based on weathers fetched - getWeatherIcon()
+3. A function to Show recommended outfits based on weather data - getOutfitRecommendation() 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Architecting 
+A simple architecture is followed to keep the app modular. For now, I have seperated only the error component from the main dashboard component. 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+# Improvements to Application architecture
+1. Seperation of concerns between the core logic and the reusable components can be achieved by making the core logic functions independent and away from the weatherDashboard component.
+2. I could seperate the cards as a component and make it reusable, Due to the smaller nature of this application i have not done it nor did time allow me for now.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
