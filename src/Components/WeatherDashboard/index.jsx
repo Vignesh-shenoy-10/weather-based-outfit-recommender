@@ -19,6 +19,7 @@ import CheckroomRoundedIcon from "@mui/icons-material/Checkroom";
 import WeatherErrorPopup from "../WeatherErrorPopup";
 import ReactAnimatedWeather from "react-animated-weather";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import InputErrorPopup from "../WeatherInputErrorPopup";
 
 const API_KEY = "6aa2b5cd48b2524ab26a4fb65f40c95b";
 
@@ -99,18 +100,41 @@ function getOutfitRecommendation(weather) {
   };
 }
 
+function getWeatherContextText(weather) {
+  if (!weather || !weather.weather || !weather.weather[0]) return "";
+
+  const main = weather.weather[0].main.toLowerCase();
+  const location = `${weather.name}, ${weather.sys.country}`;
+
+  if (main.includes("rain") || main.includes("storm")) {
+    return `The Skies are weeping at ${location}.`;
+  }
+  if (main.includes("sun") || main.includes("clear")) {
+    return `The Sun is blazing at ${location}.`;
+  }
+  if (main.includes("snow")) {
+    return `Snowflakes are dancing at ${location}.`;
+  }
+  if (main.includes("cloud")) {
+    return `Clouds are rolling in over at ${location}.`;
+  }
+  return `Weather update for ${location}.`;
+}
+
 function WeatherDashboard() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [inputError, setInputError] = useState(false);
 
   const fetchWeather = async () => {
     if (!city) {
-      setError("Please enter a city name.");
+      setInputError(true);
       return;
     }
+    setInputError(false);
     setError("");
     setWeather(null);
     setLoading(true);
@@ -237,6 +261,7 @@ function WeatherDashboard() {
         )}
       </div>
       <WeatherErrorPopup open={showError} onClose={() => setShowError(false)} />
+      <InputErrorPopup open={inputError} onClose={() => setInputError(false)} />
       {weather ? (
         <div
           style={{
@@ -379,6 +404,17 @@ function WeatherDashboard() {
             </Typography>
             {weather && (
               <div className="flex flex-col items-center justify-center">
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "#0284c7",
+                    fontWeight: 500,
+                    mb: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  {getWeatherContextText(weather)}
+                </Typography>
                 {getOutfitRecommendation(weather).icon}
                 <Typography
                   variant="h5"
