@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Autocomplete, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -6,9 +6,13 @@ import debounce from "lodash.debounce";
 
 const API_KEY = "6aa2b5cd48b2524ab26a4fb65f40c95b";
 
-export default function CityAutoComplete({ city, setCity }) {
-  const [options, setOptions] = useState([]);
-  const [inputValue, setInputValue] = useState("");
+export default function CityAutoComplete({
+  city,
+  setCity,
+  inputValue,
+  setInputValue,
+}) {
+  const [options, setOptions] = React.useState([]);
 
   const fetchCities = useMemo(
     () =>
@@ -39,9 +43,29 @@ export default function CityAutoComplete({ city, setCity }) {
     []
   );
 
-  const handleInputChange = (event, newInputValue) => {
-    setInputValue(newInputValue);
-    fetchCities(newInputValue);
+  const handleInputChange = (event, newInputValue, reason) => {
+    if (reason === "input") {
+      setInputValue(newInputValue);
+      fetchCities(newInputValue);
+    }
+    if (reason === "clear") {
+      setInputValue("");
+      setCity("");
+      setOptions([]);
+    }
+  };
+
+  const handleChange = (event, newValue) => {
+    if (!newValue) {
+      setCity("");
+      setInputValue("");
+    } else if (typeof newValue === "string") {
+      setCity(newValue);
+      setInputValue(newValue);
+    } else {
+      setCity(newValue.value);
+      setInputValue(newValue.label);
+    }
   };
 
   return (
@@ -51,30 +75,8 @@ export default function CityAutoComplete({ city, setCity }) {
       getOptionLabel={(option) => option.label || ""}
       value={city ? { label: city, value: city } : null}
       inputValue={inputValue}
-      onInputChange={(event, newInputValue, reason) => {
-        if (reason === "input") {
-          setInputValue(newInputValue);
-          fetchCities(newInputValue);
-        }
-        // When the clear icon or other programmatic changes
-        if (reason === "clear") {
-          setInputValue("");
-          setCity("");
-          setOptions([]);
-        }
-      }}
-      onChange={(e, newValue) => {
-        if (!newValue) {
-          setCity("");
-          setInputValue("");
-        } else if (typeof newValue === "string") {
-          setCity(newValue);
-          setInputValue(newValue);
-        } else {
-          setCity(newValue.value);
-          setInputValue(newValue.label);
-        }
-      }}
+      onInputChange={handleInputChange}
+      onChange={handleChange}
       renderInput={(params) => (
         <TextField
           {...params}
