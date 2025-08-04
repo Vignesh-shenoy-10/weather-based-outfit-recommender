@@ -33,9 +33,9 @@ Following are the core functionalities involved
 1. I have created WeatherInputErrorPopup component which is a basic MUI card layout to display error if input is empty.
 2. I have created WeatherErrorPopup component which is a basic MUI Card Layout to display error if entered city does not exist. 
 
+
 # Architecting 
 A simple architecture is followed to keep the app modular. For now, I have seperated only the error component from the main dashboard component. 
-
 
 # Improvements to Application architecture
 1. Seperation of concerns between the core logic and the reusable components can be achieved by making the core logic functions independent and away from the weatherDashboard component.
