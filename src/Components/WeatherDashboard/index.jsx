@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -20,6 +20,7 @@ import WeatherErrorPopup from "../WeatherErrorPopup";
 import ReactAnimatedWeather from "react-animated-weather";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import InputErrorPopup from "../WeatherInputErrorPopup";
+import Chip from "@mui/material/Chip";
 
 const API_KEY = "6aa2b5cd48b2524ab26a4fb65f40c95b";
 
@@ -124,10 +125,29 @@ function getWeatherContextText(weather) {
 function WeatherDashboard() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [inputError, setInputError] = useState(false);
+  const [recentCities, setRecentCities] = useState([]);
+
+  useEffect(() => {
+    const storedCities = sessionStorage.getItem("recentCities");
+    if (storedCities) {
+      setRecentCities(JSON.parse(storedCities));
+    }
+  }, []);
+
+  const addCityToRecent = (city) => {
+    setRecentCities((prev) => {
+      const newList = [
+        city,
+        ...prev.filter((c) => c.toLowerCase() !== city.toLowerCase()),
+      ];
+      if (newList.length > 5) newList.pop();
+      sessionStorage.setItem("recentCities", JSON.stringify(newList));
+      return newList;
+    });
+  };
 
   const fetchWeather = async () => {
     if (!city) {
@@ -135,7 +155,6 @@ function WeatherDashboard() {
       return;
     }
     setInputError(false);
-    setError("");
     setWeather(null);
     setLoading(true);
     try {
@@ -151,6 +170,7 @@ function WeatherDashboard() {
       setShowError(true);
     } finally {
       setLoading(false);
+      addCityToRecent(city);
     }
   };
 
@@ -254,11 +274,39 @@ function WeatherDashboard() {
             )}
           </Button>
         </form>
-        {error && (
-          <Typography color="error" className="mt-2 text-center">
-            {error}
-          </Typography>
-        )}
+        <div
+          style={{
+            marginTop: 10,
+            display: "flex",
+            gap: 8,
+            flexWrap: "wrap",
+            maxWidth: 350,
+          }}
+        >
+          {recentCities.map((city) => (
+            <Chip
+              key={city}
+              label={city}
+              onClick={() => setCity(city)}
+              onDelete={() => {
+                setRecentCities((prev) => {
+                  const filtered = prev.filter((c) => c !== city);
+                  sessionStorage.setItem(
+                    "recentCities",
+                    JSON.stringify(filtered)
+                  );
+                  return filtered;
+                });
+              }}
+              color="primary"
+              variant="outlined"
+              sx={{
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            />
+          ))}
+        </div>
       </div>
       <WeatherErrorPopup open={showError} onClose={() => setShowError(false)} />
       <InputErrorPopup open={inputError} onClose={() => setInputError(false)} />
@@ -269,7 +317,8 @@ function WeatherDashboard() {
             flexDirection: "row",
             gap: "2rem",
             alignItems: "stretch",
-            marginTop: "10px",
+            marginTop: "5px",
+            marginLeft: "50px",
           }}
         >
           <Card
@@ -277,9 +326,9 @@ function WeatherDashboard() {
             sx={{
               maxWidth: 370,
               minWidth: 320,
-              height: 500,
-              borderRadius: 6,
-              padding: 4,
+              height: 485,
+              borderRadius: 5,
+              padding: 2,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -290,7 +339,7 @@ function WeatherDashboard() {
             }}
           >
             <CardContent className="flex flex-col items-center w-full">
-              <div style={{ marginBottom: 18 }}>
+              <div>
                 <ReactAnimatedWeather
                   icon={getAnimatedWeatherIcon(weather.weather[0].main)}
                   color="#fff"
@@ -312,7 +361,7 @@ function WeatherDashboard() {
               <Typography
                 variant="h6"
                 className="capitalize"
-                sx={{ mb: 2, color: "#fff" }}
+                sx={{ mb: 1, color: "#fff" }}
               >
                 {weather.weather[0].description}
               </Typography>
@@ -375,9 +424,9 @@ function WeatherDashboard() {
           <Card
             sx={{
               width: 700,
-              minHeight: 420,
-              borderRadius: 6,
-              padding: 6,
+              height: 420,
+              borderRadius: 5,
+              padding: 2,
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -387,6 +436,7 @@ function WeatherDashboard() {
               color: "#232e4a",
               position: "relative",
               overflow: "hidden",
+              marginTop: "20px",
             }}
           >
             <Typography
